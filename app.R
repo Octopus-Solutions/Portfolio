@@ -1,5 +1,15 @@
 library(shiny)
-library(ggplot2)
+
+ui <- fluidPage(  
+    titlePanel(""),
+    sidebarLayout(
+        sidebarPanel(  h2("Williams Portfolio"),
+                       DT::dataTableOutput("mytable")),
+        mainPanel(
+            plotOutput("plot2"))))
+
+server <- function(input, output) {
+    library(ggplot2)
 
 library(tidyr)
 
@@ -12,16 +22,6 @@ library(purrr)
 library(quantmod)
 library(tidyquant)
 
-ui <- fluidPage(  
-    titlePanel(""),
-    sidebarLayout(
-        sidebarPanel(  h2("Williams Portfolio"),
-                       DT::dataTableOutput("mytable")),
-        mainPanel(
-            plotOutput("plot2"))))
-
-server <- function(input, output) {
-    
     
     today = Sys.time()
     last_year = today - years(1)
