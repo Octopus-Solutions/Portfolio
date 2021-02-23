@@ -1,4 +1,6 @@
 library(shiny)
+library(ggplot2)
+library(plotly)
 
 ui <- fluidPage(  
     titlePanel(""),
@@ -6,22 +8,10 @@ ui <- fluidPage(
         sidebarPanel(  h2("Williams Portfolio"),
                        DT::dataTableOutput("mytable")),
         mainPanel(
-            plotOutput("plot2"))))
+            plotlyOutput("plot2"))))
 
 server <- function(input, output) {
-    library(ggplot2)
-
-library(tidyr)
-
-library(lubridate)
-library(dplyr)
-library(purrr)
-
-
-
-library(quantmod)
-library(tidyquant)
-
+    
     
     today = Sys.time()
     last_year = today - years(1)
@@ -50,14 +40,14 @@ library(tidyquant)
     
     
     
-    output$plot2 <- renderPlot({
+    output$plot2 <- renderPlotly({
         print(
-            
+          ggplotly(  
             ggplot(prices) + aes(x = date, y = adjusted, color = symbol) +
                 geom_line(size=0.2) + facet_wrap(~symbol, scales = "free") + 
                 facet_wrap(~symbol,scales = 'free_y') +
                 theme_bw() +geom_smooth(formula = y~x, method = loess, size=.3) + ggtitle("Williams Portfolio")+
-                theme(axis.text.x = element_text(angle = 90) ))
+                theme(axis.text.x = element_text(angle = 90) )))
         
     })
     
