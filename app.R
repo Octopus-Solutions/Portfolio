@@ -1,14 +1,28 @@
 library(shiny)
 library(ggplot2)
 library(plotly)
+library(tidyr)
+
+library(lubridate)
+library(dplyr)
+library(purrr)
+
+
+
+library(quantmod)
+library(tidyquant)
 
 ui <- fluidPage(  
-    titlePanel(""),
+    
     sidebarLayout(
-        sidebarPanel(  h2("Williams Portfolio"),
-                       DT::dataTableOutput("mytable")),
+        sidebarPanel(h4("Williams Portfolio"),
+                     DT::dataTableOutput("mytable")) ,
         mainPanel(
-            plotlyOutput("plot2"))))
+            plotlyOutput("plot2")))
+    
+    
+    
+    )
 
 server <- function(input, output) {
     
@@ -31,23 +45,23 @@ server <- function(input, output) {
         group_by(symbol) %>%
         slice(1)
     
-    myslice =    prices[c(1,2,6,8)] %>%
+    myslice =    prices[c(1,2,6)] %>%
         group_by(symbol) %>%
         slice(1)
     
-    
-    output$table <- renderDataTable(myslice, options = list(pageLength = 5))
-    
+
+    output$table <- renderDataTable(myslice, options = list(pageLength = 2))
+   
     
     
     output$plot2 <- renderPlotly({
-        print(
-          ggplotly(  
-            ggplot(prices) + aes(x = date, y = adjusted, color = symbol) +
-                geom_line(size=0.2) + facet_wrap(~symbol, scales = "free") + 
-                facet_wrap(~symbol,scales = 'free_y') +
-                theme_bw() +geom_smooth(formula = y~x, method = loess, size=.3) + ggtitle("Williams Portfolio")+
-                theme(axis.text.x = element_text(angle = 90) )))
+        print(ggplotly(
+            
+                ggplot(prices) + aes(x = date, y = adjusted, color = symbol) +
+                    geom_line(size=0.2) + ylab('Close')+
+                    facet_wrap(~symbol,scales = 'free_y') +
+                    theme_bw() +geom_smooth(formula = y~x, method = loess, size=.3) + ggtitle("Williams Portfolio")+
+                    theme(axis.text.x = element_text(angle = 90) )))
         
     })
     
